@@ -5,6 +5,9 @@ import typing
 from pathlib import Path
 
 import rhasspysnips_nlu
+from snips_nlu import SnipsNLUEngine
+from snips_nlu.default_configs import DEFAULT_CONFIGS
+
 from rhasspyhermes.base import Message
 from rhasspyhermes.client import GeneratorType, HermesClient, TopicArgs
 from rhasspyhermes.intent import Intent, Slot, SlotRange
@@ -17,8 +20,6 @@ from rhasspyhermes.nlu import (
     NluTrain,
     NluTrainSuccess,
 )
-from snips_nlu import SnipsNLUEngine
-from snips_nlu.default_configs import DEFAULT_CONFIGS
 
 _LOGGER = logging.getLogger("rhasspysnips_nlu_hermes")
 
@@ -118,6 +119,7 @@ class NluHermesMqtt(HermesClient):
                         raw_input=original_input,
                         wakeword_id=query.wakeword_id,
                         lang=query.lang,
+                        custom_data=query.custom_data,
                     ),
                     {"intent_name": intent_name},
                 )
@@ -128,6 +130,7 @@ class NluHermesMqtt(HermesClient):
                     id=query.id,
                     site_id=query.site_id,
                     session_id=query.session_id,
+                    custom_data=query.custom_data,
                 )
         except Exception as e:
             _LOGGER.exception("handle_query")
