@@ -96,6 +96,17 @@ class NluHermesMqtt(HermesClient):
                     for s in result.get("slots", [])
                 ]
 
+                if query.custom_entities:
+                    # Copy user-defined entities
+                    for entity_name, entity_value in query.custom_entities.items():
+                        slots.append(
+                            Slot(
+                                entity=entity_name,
+                                confidence=1.0,
+                                value={"value": entity_value},
+                            )
+                        )
+
                 # intentParsed
                 yield NluIntentParsed(
                     input=query.input,
@@ -116,6 +127,7 @@ class NluHermesMqtt(HermesClient):
                         intent=Intent(intent_name=intent_name, confidence_score=1.0),
                         slots=slots,
                         asr_tokens=[NluIntent.make_asr_tokens(query.input.split())],
+                        asr_confidence=query.asr_confidence,
                         raw_input=original_input,
                         wakeword_id=query.wakeword_id,
                         lang=query.lang,
